@@ -1,0 +1,93 @@
+package unitTesting;
+ 
+import org.junit.Assert;
+import org.junit.Test;
+ 
+import java.util.Collection;
+import java.util.List;
+ 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+ 
+public class RaceEntryTest {
+ 
+    @Test(expected = NullPointerException.class)
+    public void addRiderShouldThrowExceptionForNull() {
+        RaceEntry raceEntry = new RaceEntry();
+        raceEntry.addRider(null);
+    }
+ 
+    @Test(expected = IllegalArgumentException.class)
+    public void addRiderShouldThrowExceptionForExistingName() {
+        RaceEntry raceEntry = new RaceEntry();
+        UnitRider rider = new UnitRider("gosho", null);
+        raceEntry.addRider(rider);
+        raceEntry.addRider(rider);
+    }
+ 
+    @Test
+    public void addRiderShouldWork() {
+        RaceEntry raceEntry = new RaceEntry();
+        UnitMotorcycle motorcycle =
+                new UnitMotorcycle("maklaran", 300, 800);
+        UnitRider rider = new UnitRider("gosho", motorcycle);
+        raceEntry.addRider(rider);
+ 
+        assertEquals(1, raceEntry.getRiders().size());
+    }
+ 
+    @Test
+    public void addRiderShouldReturnMessage() {
+        RaceEntry raceEntry = new RaceEntry();
+        UnitMotorcycle motorcycle =
+                new UnitMotorcycle("maklaran", 300, 800);
+        UnitRider rider = new UnitRider("gosho", motorcycle);
+        String actual = raceEntry.addRider(rider);
+ 
+        assertEquals("Rider gosho added in race.", actual);
+    }
+ 
+    @Test(expected = IllegalArgumentException.class)
+    public void calculateHorsePowerShouldThrowException() {
+        RaceEntry raceEntry = new RaceEntry();
+        UnitRider rider = new UnitRider("gosho",
+                new UnitMotorcycle("goshko", 3, 2));
+        raceEntry.addRider(rider);
+        raceEntry.calculateAverageHorsePower();
+    }
+ 
+    @Test
+    public void calculateHorsePowerShouldWork() {
+        RaceEntry raceEntry = new RaceEntry();
+        UnitMotorcycle motorcycle = new UnitMotorcycle("mak", 2, 1);
+        UnitRider rider = new UnitRider("gosho", motorcycle);
+        UnitRider rider2 = new UnitRider("pencho", motorcycle);
+        raceEntry.addRider(rider);
+        raceEntry.addRider(rider2);
+ 
+ 
+        assertEquals(raceEntry.calculateAverageHorsePower(), 2, 0.00);
+    }
+ 
+    @Test
+    public void getRidersShouldWork() {
+        RaceEntry raceEntry = new RaceEntry();
+        Collection<UnitRider> riders = raceEntry.getRiders();
+ 
+        boolean isUnmodifiableCollection = false;
+        try {
+            riders.add(new UnitRider("goshko", null));
+        } catch (Exception ex) {
+            isUnmodifiableCollection = true;
+        }
+ 
+        assertTrue(isUnmodifiableCollection);
+    }
+ 
+    @Test(expected = UnsupportedOperationException.class)
+    public void getRidersShouldThrow() {
+        RaceEntry raceEntry = new RaceEntry();
+        Collection<UnitRider> riders = raceEntry.getRiders();
+        riders.clear();
+    }
+}
